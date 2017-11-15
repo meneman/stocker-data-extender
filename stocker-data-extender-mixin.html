@@ -1,0 +1,205 @@
+<script>
+  /*
+   * This mixin does something really complicated.
+   * @polymer
+   * @stockerDataExtender
+   */
+stockerDataExtenderMixin = (superClass) => class extends superClass {
+
+      static get properties() {
+        return {
+              pageArray: {
+                type: Array
+            },
+            componentArray: {
+                type: Array
+            },
+            page: {
+                type: Object
+            },
+            extendedPage: {
+                type: Object,
+                readOnly: true,
+                reflectToAttribute: true,
+                notify: true,
+                computed: '__extendSinglePage(page)'
+            },
+          extendedPageArray: {
+              type: Array,
+              readOnly: true,
+              reflectToAttribute: true,
+              notify: true,
+              computed: '__extendPagesArray(pageArray)'
+          },
+          extendedComponentArray: {
+              type: Array,
+              readOnly: true,
+              reflectToAttribute: true,
+              computed: '__extendComponentArray(componentArray)'
+          },
+          _states: {
+              type: Array,
+              value: ['unknown','untouched', 'touched',
+                'touched_undoable', 'untouched_undoable',  'finished', 'reserved'
+              ]
+          },
+          metaInfo: {
+              type: Object,
+              readOnly: true,
+              notify: true,
+              computed: '__createMetaInfoStructure(_states)'
+          }
+        };
+      }
+
+      __extendPagesArray(pages){
+         pages.map((page) => this.__extendPage(page));
+         this.metaInfo.total = pages.length;
+         this.notifyPath('metaInfo.total');
+         console.log(pages);
+         return pages;
+      }
+
+      __extendSinglePage(page){
+          return this.__extendPage(page);
+      }
+
+      __extendComponents(components){
+
+      }
+
+      __collectMetaInfo(page) {
+        for (let state of this._states) {
+          if (page.state == state) {
+            this.metaInfo[state.toString()]++;
+            this.notifyPath('metaInfo.'+state.toString());
+          }
+        }
+          if(page.reserved){
+          this.metaInfo.reserved++;
+          this.notifyPath('metaInfo.reserved');
+          }
+      }
+
+      __extendPage(page) {
+          console.log("page " + page.id + " gets extended");
+        page.reservation = {bool: false, user: null, state: null, disables: false};
+        if(page.userID) {
+          page.reservation.bool = true;
+          page.reservation.user = page.userID;
+          if(page.userID != this.user.id){
+            page.reservation.state = 'reservation_other';
+            page.reservation.disables = true;
+          } else if(page.userID == this.user.id){
+            page.reservation.state = 'reservation_current'
+          }
+        } else{
+          page.reservation.bool = false;
+        }
+
+        if(page.ComponentsList){
+          page.locations = page.ComponentsList.length;
+          this._countComponents(page);
+        }
+
+        if(page.state){
+          this.__collectMetaInfo(page);
+          page.state = this.__validateState(page);
+        }
+
+        if(page.lastTouched){
+
+            var diffTime = [];
+            var diffMs = Date.now() - page.lastTouched;
+            var diffMins = Math.trunc(((diffMs % 86400000) % 3600000) / 60000);
+            var diffDays = Math.trunc(diffMs / (1000 * 3600 * 24));
+            var diffHours = Math.trunc((diffMs / (1000 * 3600)) % 24 );
+            console.log("minutes: " + diffMins + " hours: "+diffHours+ " diffDays: "+diffDays)
+            page.touchedMinuesAgo = [diffMins, diffHours, diffDays]
+        }
+        page.dateOfCreation = this.__formatDate(page.dateOfCreation);
+        page.link = 'plates/' + page.id;
+        return page;
+      }
+
+      _countComponents(page){
+        page.componentCount = 0;
+        page.collected = 0;
+        page.ComponentsList.forEach((element)=> {
+          page.componentCount += element.required;
+          page.collected += element.collected;
+        });
+
+        let state;
+        let progress = page.componentCount - page.collected;
+        if(progress <= 0){
+            state = 'finished';
+        } else if(progress == page.componentCount){
+            state = 'untouched';
+        } else if(progress >= 0) {
+            state = 'touched'
+        }
+        if(state != page.state){
+            if(this._changeState){
+                this._changeState(page.id,state);
+            }
+        }
+
+        // change state live in frontend if it isnt  reserved;
+        if(page.state != 'reserved'){
+            page.state = state;
+        }
+
+        return page;
+      }
+
+      __createMetaInfoStructure(states){
+        let obj = {};
+        states.forEach((value) => {
+          Object.defineProperty(obj, value, {value: 0, writable: true, enumerable:true});
+        });
+          Object.defineProperty(obj, 'total', {value: 0, writable: true, enumerable:true});
+          Object.defineProperty(obj, 'reserved', {value: 0, writable: true, enumerable:true});
+
+          let _resetFunction = function() {
+              for (let key in this) {
+                    if (this.hasOwnProperty(key)) {
+                        this[key] = 0;
+                    }
+                }
+          }
+        Object.defineProperty(obj, '_reset', {value: _resetFunction});
+        return obj;
+      }
+
+      __validateState(page){
+        if(this._states.includes(page.state)){
+          return page.state;
+        } else {
+          console.log("illigal state of page "+page.id+". State is: "+page.state+". internaly handled as: "+this._states[0]);
+          return this._states[0];
+          }
+        }
+
+        __formatDate(date) {
+
+        // NOTE not formatting the date atm
+          return date;
+          var date = Date.parse(date);
+          var monthNames = [
+              "January", "February", "March",
+              "April", "May", "June", "July",
+              "August", "September", "October",
+              "November", "December"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+
+            return day + '/' + monthIndex + '/' + year + ' ' + date.getHours() + ':' + date.getMinutes();
+        }
+  }
+
+  </script>
