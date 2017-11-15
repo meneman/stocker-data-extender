@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="stocker-data-extender-mixin.html">
 
 <dom-module id="stocker-data-extender">
   <template>
@@ -13,22 +14,15 @@
   <script>
     /**
      * `stocker-data-extender`
-     * 
+     * extends page ressource  for the stocker frontend
      *
      * @customElement
      * @polymer
      * @demo demo/index.html
      */
-    class StockerDataExtender extends Polymer.Element {
+    class StockerDataExtender extends stockerDataExtenderMixin(Polymer.Element) {
       static get is() { return 'stocker-data-extender'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'stocker-data-extender'
-          }
-        };
-      }
+
     }
 
     window.customElements.define(StockerDataExtender.is, StockerDataExtender);
