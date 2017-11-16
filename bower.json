@@ -1,15 +1,24 @@
 {
-  "name": "stocker-data-extender",
-  "main": "stocker-data-extender.html",
-  "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0"
-  },
-  "devDependencies": {
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
-    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
-  },
-  "resolutions": {
-    "polymer": "^2.0.0"
-  }
+    "name": "stocker-data-extender",
+    "version": "2.0.5",
+    "description": "extends data to make it suite the stocker frontend",
+    "authors": [
+        "Jakob Steege"
+    ],
+    "main": "stocker-data-extender.html",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:meneman/stocker-data-extender.git"
+    },
+    "dependencies": {
+        "polymer": "Polymer/polymer#^2.0.0"
+    },
+    "devDependencies": {
+        "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+        "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+    },
+    "resolutions": {
+        "polymer": "^2.0.0"
+    }
 }
