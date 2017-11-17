@@ -8,7 +8,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
 
       static get properties() {
         return {
-              pageArray: {
+            pageArray: {
                 type: Array
             },
             componentArray: {
@@ -24,26 +24,26 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
                 notify: true,
                 computed: '__extendSinglePage(page)'
             },
-          extendedPageArray: {
+            extendedPageArray: {
               type: Array,
               readOnly: true,
               reflectToAttribute: true,
               notify: true,
               computed: '__extendPagesArray(pageArray)'
           },
-          extendedComponentArray: {
+            extendedComponentArray: {
               type: Array,
               readOnly: true,
               reflectToAttribute: true,
               computed: '__extendComponentArray(componentArray)'
           },
-          _states: {
+            _states: {
               type: Array,
               value: ['unknown','untouched', 'touched',
                 'touched_undoable', 'untouched_undoable',  'finished', 'reserved'
               ]
           },
-          metaInfo: {
+            metaInfo: {
               type: Object,
               readOnly: true,
               notify: true,
@@ -53,19 +53,28 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
       }
 
       __extendPagesArray(pages){
-         pages.map((page) => this.__extendPage(page));
-         this.metaInfo.total = pages.length;
-         this.notifyPath('metaInfo.total');
-         console.log(pages);
-         return pages;
+         if(this.__validateData(pages)){
+             pages.map((page) => this.__extendPage(page));
+             this.metaInfo.total = pages.length;
+             this.notifyPath('metaInfo.total');
+             return pages;
+         }
       }
 
       __extendSinglePage(page){
+         if(this.__validateData(page)){
           return this.__extendPage(page);
+        }
       }
 
+      //_extendComponentsList(component)
       __extendComponents(components){
+          return;
+      }
 
+      __validateData(data){
+          console.log(data);
+        return ((typeof data === 'object' || typeof data === 'Array') && (data != null)) ? true : false;
       }
 
       __collectMetaInfo(page) {
@@ -82,7 +91,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
       }
 
       __extendPage(page) {
-          console.log("page " + page.id + " gets extended");
+        console.log("page " + page.id + " gets extended");
         page.reservation = {bool: false, user: null, state: null, disables: false};
         if(page.userID) {
           page.reservation.bool = true;
@@ -182,23 +191,21 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         }
 
         __formatDate(date) {
-
-        // NOTE not formatting the date atm
           return date;
-          var date = Date.parse(date);
-          var monthNames = [
-              "January", "February", "March",
-              "April", "May", "June", "July",
-              "August", "September", "October",
-              "November", "December"
-            ];
-
-            var day = date.getDate();
-            var monthIndex = date.getMonth();
-            var year = date.getFullYear();
-
-
-            return day + '/' + monthIndex + '/' + year + ' ' + date.getHours() + ':' + date.getMinutes();
+          // var date = Date.parse(date);
+          // var monthNames = [
+          //     "January", "February", "March",
+          //     "April", "May", "June", "July",
+          //     "August", "September", "October",
+          //     "November", "December"
+          //   ];
+          //
+          //   var day = date.getDate();
+          //   var monthIndex = date.getMonth();
+          //   var year = date.getFullYear();
+          //
+          //
+          //   return day + '/' + monthIndex + '/' + year + ' ' + date.getHours() + ':' + date.getMinutes();
         }
   }
 
