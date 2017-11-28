@@ -132,13 +132,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
       }
 
       _countComponents(page){
-        page.componentCount = 0;
-        page.collected = 0;
-        page.ComponentsList.forEach((element)=> {
-          page.componentCount += element.required;
-          page.collected += element.collected;
-        });
-
         let state;
         let progress = page.componentCount - page.collected;
         if(progress <= 0){
@@ -148,20 +141,10 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         } else if(progress >= 0) {
             state = 'touched'
         }
-        if(state != page.state){
-            if(this._changeState){
-                this._changeState(page.id,state);
-            }
-        }
-
-        // change state live in frontend if it isnt  reserved;
-        if(page.state != 'reserved'){
-            page.state = state;
-        }
-
+        page.state = state;
         return page;
       }
-
+      
       __createMetaInfoStructure(states){
         let obj = {};
         states.forEach((value) => {
