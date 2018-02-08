@@ -73,7 +73,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
       }
 
       __validateData(data){
-          console.log(data);
         return ((typeof data === 'object' || typeof data === 'Array') && (data != null)) ? true : false;
       }
 
@@ -91,7 +90,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
       }
 
       __extendPage(page) {
-        console.log("page " + page.id + " gets extended");
         page.reservation = {bool: false, user: null, state: null, disables: false};
         if(page.userID) {
           page.reservation.bool = true;
