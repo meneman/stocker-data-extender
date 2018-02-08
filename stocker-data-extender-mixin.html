@@ -67,9 +67,9 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         }
       }
 
-      //_extendComponentsList(component)
-      __extendComponents(components){
-          return;
+      __extendComponents(component){
+          component.ComponentType.id = component.ComponentType.id.replace(/ /g, '-');
+          return component
       }
 
       __validateData(data){
@@ -107,6 +107,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         if(page.ComponentsList){
           page.locations = page.ComponentsList.length;
           this._countComponents(page);
+          page.ComponentsList.map(this.__extendComponents);
         }
 
         if(page.state){
