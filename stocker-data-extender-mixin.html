@@ -22,20 +22,20 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
                 readOnly: true,
                 reflectToAttribute: true,
                 notify: true,
-                computed: '__extendSinglePage(page)'
+                computed: '_extendSinglePage(page)'
             },
             extendedPageArray: {
               type: Array,
               readOnly: true,
               reflectToAttribute: true,
               notify: true,
-              computed: '__extendPagesArray(pageArray)'
+              computed: '_extendPagesArray(pageArray)'
           },
             extendedComponentArray: {
               type: Array,
               readOnly: true,
               reflectToAttribute: true,
-              computed: '__extendComponentArray(componentArray)'
+              computed: '_extendComponentArray(componentArray)'
           },
             _states: {
               type: Array,
@@ -52,7 +52,11 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         };
       }
 
-      __extendPagesArray(pages){
+      _extendComponentArray(components){
+        return components.map(this.__extendComponents);
+      }
+
+      _extendPagesArray(pages){
          if(this.__validateData(pages)){
              pages.map((page) => this.__extendPage(page));
              this.metaInfo.total = pages.length;
@@ -61,7 +65,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
          }
       }
 
-      __extendSinglePage(page){
+      _extendSinglePage(page){
          if(this.__validateData(page)){
           return this.__extendPage(page);
         }
@@ -106,7 +110,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
 
         if(page.ComponentsList){
           page.locations = page.ComponentsList.length;
-          this._countComponents(page);
           page.ComponentsList.map(this.__extendComponents);
         }
 
@@ -130,19 +133,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         return page;
       }
 
-      _countComponents(page){
-        let state;
-        let progress = page.componentCount - page.collected;
-        if(progress <= 0){
-            state = 'finished';
-        } else if(progress == page.componentCount){
-            state = 'untouched';
-        } else if(progress >= 0) {
-            state = 'touched'
-        }
-        page.state = state;
-        return page;
-      }
       
       __createMetaInfoStructure(states){
         let obj = {};
