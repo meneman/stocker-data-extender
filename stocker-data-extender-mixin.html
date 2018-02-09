@@ -19,21 +19,16 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
             },
             extendedPage: {
                 type: Object,
-                readOnly: true,
-                reflectToAttribute: true,
                 notify: true,
                 computed: '_extendSinglePage(page)'
             },
             extendedPageArray: {
               type: Array,
-              readOnly: true,
-              reflectToAttribute: true,
               notify: true,
               computed: '_extendPagesArray(pageArray)'
           },
             extendedComponentArray: {
               type: Array,
-              readOnly: true,
               reflectToAttribute: true,
               computed: '_extendComponentArray(componentArray)'
           },
@@ -45,7 +40,6 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
           },
             metaInfo: {
               type: Object,
-              readOnly: true,
               notify: true,
               computed: '__createMetaInfoStructure(_states)'
           }
