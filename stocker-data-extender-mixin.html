@@ -119,7 +119,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
             var diffMins = Math.trunc(((diffMs % 86400000) % 3600000) / 60000);
             var diffDays = Math.trunc(diffMs / (1000 * 3600 * 24));
             var diffHours = Math.trunc((diffMs / (1000 * 3600)) % 24 );
-            console.log("minutes: " + diffMins + " hours: "+diffHours+ " diffDays: "+diffDays)
+            //console.log("minutes: " + diffMins + " hours: "+diffHours+ " diffDays: "+diffDays)
             page.touchedMinuesAgo = [diffMins, diffHours, diffDays]
         }
         page.dateOfCreation = this.__formatDate(page.dateOfCreation);
@@ -151,7 +151,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
         if(this._states.includes(page.state)){
           return page.state;
         } else {
-          console.log("illigal state of page "+page.id+". State is: "+page.state+". internaly handled as: "+this._states[0]);
+          //console.log("illigal state of page "+page.id+". State is: "+page.state+". internaly handled as: "+this._states[0]);
           return this._states[0];
           }
         }
