@@ -123,7 +123,7 @@ stockerDataExtenderMixin = (superClass) => class extends superClass {
             page.touchedMinuesAgo = [diffMins, diffHours, diffDays]
         }
         page.dateOfCreation = this.__formatDate(page.dateOfCreation);
-        page.link = 'plates/' + page.id;
+        page.link = 'components/' + page.id;
         return page;
       }
 
